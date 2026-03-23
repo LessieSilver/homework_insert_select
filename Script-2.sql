@@ -1,9 +1,10 @@
-select MAX(duration) AS max_duration
-from  tracks;
+select title, duration 
+from  tracks
+where duration = (select max(duration) from tracks); 
 
 select title, duration
 from tracks
-where duration > 210;
+where duration >= 210;
 
 select title, release_year
 from compilations
@@ -15,7 +16,7 @@ where name not like '% %';
 
 select title
 from tracks
-where title like 'My%';
+where title ilike 'my %' or title ilike '% my' or title ilike '% my %' or title ilike 'my';
 
 ---------------------
 
@@ -34,11 +35,11 @@ from tracks
 join albums on tracks.album_id = albums.id
 group by albums.id, albums.title;
 
-select distinct artists.name
+select name
 from artists
-left join album_artists on artists.id = album_artists.artist_id
-left join albums on album_artists.album_id = albums.id and albums.release_year = 2020
-where albums.id  is null;
+where id not in (select artist_id from album_artists
+join albums on album_artists.album_id = albums.id
+where albums.release_year = 2020);
 
 select distinct compilations.title
 from compilations
